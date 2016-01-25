@@ -1,7 +1,7 @@
 ##Install cartodb-postgresql
 ```bash
-cd /tmp
-git clone git@github.com:CartoDB/pg_schema_triggers.git
+cd ~
+git clone https://github.com/cartoDB/pg_schema_triggers.git
 cd pg_schema_triggers
 sudo make all install PGUSER=postgres
 sudo make installcheck PGUSER=postgres # to run tests
