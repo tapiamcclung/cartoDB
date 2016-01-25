@@ -1,2 +1,2 @@
 # cartoDB
-installation steps for cartoDB production environment
+Installation steps for cartoDB production environment
