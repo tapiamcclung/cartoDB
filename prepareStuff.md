@@ -98,8 +98,9 @@ host    all             all             127.0.0.1/32            trust
 ```bash
 sudo /etc/init.d/postgresql restart
 ```
+or
 ```bash
-sudo /etc/init.d/postgresql restart
+sudo service postgresql restart
 ```
 
 ## Install PostGIS 2.1
