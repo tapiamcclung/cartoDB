@@ -93,14 +93,13 @@ nodejs -v
 npm -v
 ```
 
-aqui voy
 ##Install Redis for cartoDB components like Windshaft or the SQL API
 ```bash
 sudo apt-get install redis-server
 ```
 Redis needs to be made persistent; see here for details. First, make the config file:
 ```bash
-cd wherever/cartodb # cd /home/cartodb
+cd wherever/cartodb # cd /home/rtm/cartodb
 nano redis.conf
 ```
 Then, add this line to configure RDB persistence:
@@ -108,3 +107,122 @@ Then, add this line to configure RDB persistence:
 save 60 1000
 ```
 This configuration seems to work in development, however if any issues arise with Redis it may need to be tweaked.
+
+## Install Python dependencies
+```bash
+sudo apt-get install python2.7-dev
+sudo apt-get install build-essential
+sudo apt-get install python-setuptools
+sudo apt-get install python-all-dev
+```
+#Install pip
+```bash
+sudo wget  -O /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py
+sudo python /tmp/get-pip.py
+```
+
+#Install Python GDAL
+```bash
+sudo apt-get install python-gdal
+```
+#Modify `python_requirements.txt` to use GDAL 1.11.0
+```bash
+nano python_requirements.txt
+...
+gdal==1.11.0
+```
+##Install cartoDB Python requirements
+```bash
+export CPLUS_INCLUDE_PATH=/usr/include/gdal
+export C_INCLUDE_PATH=/usr/include/gdal
+export PATH=$PATH:/usr/include/gdal
+pip install --no-use-wheel -r python_requirements.txt
+```
+#Install Mapnik
+```bash
+sudo apt-get install libmapnik-dev python-mapnik mapnik-utils
+```
+#Install CartoDB SQL API
+```bash
+cd ~
+git clone https://github.com/CartoDB/CartoDB-SQL-API.git
+cd CartoDB-SQL-API
+git checkout master
+npm install
+cp config/environments/development.js.example config/environments/development.js
+```
+To run CartoDB SQL API in development mode, simply type:
+```bash
+node app.js development
+```
+#Install Windshaft-cartodb
+First, install pango
+```bash
+sudo apt-get install libpango1.0-dev
+```
+Then, to install Windshaft:
+```bash
+cd ~
+git clone http://github.com/CartoDB/Windshaft-cartodb.git
+cd Windshaft-cartodb
+git checkout master
+npm install
+cp config/environments/development.js.example config/environments/development.js
+```
+To run Windshaft-cartodb in development mode, simply type:
+```bash
+node app.js development
+```
+#Install ImageMagick
+```bash
+sudo apt-get install imagemagick
+```
+#~~Activate Sync Tables~~
+~~Enable sync tables in the interface for all the users in your local install by updating the `sync_tables_enabled` row on the users table:~~
+```bash
+sudo su
+su postgres
+psql carto_db_development
+
+# If this gives an error about
+# postgresql boolean types,
+# change 1 to 'true':
+UPDATE users SET sync_tables_enabled = 1;
+
+\q
+exit
+exit
+```
+~~However, sync tables also require a script to run every 15 minutes, which will enqueue pending synchronizations (run this in the cartodb/ directory):~~
+```bash
+RAILS_ENV=development bundle exec rake cartodb:sync_tables
+```
+~~This command will need to be scheduled to run at a regular interval, i.e. every 15 minutes or so. Also, the environment should be changed in the command as necessary. Add to crontab like so:~~
+```bash
+*/15 * * * *    username  cd /wherever/cartodb && RAILS_ENV=development bundle exec rake cartodb:sync_tables
+```
+#Optional components
+##Varnish web app accelerator
+```bash
+sudo add-apt-repository  ppa:cartodb/varnish
+sudo apt-get update
+sudo apt-get install varnish=2.1.5.1-cdb1 #or any version <3.x
+```
+Varnish should allow telnet access in order to work with CartoDB, so you need to edit the varnish file 
+```bash
+sudo nano /etc/default/varnish
+```
+and in `the DAEMON_OPTS` variable remove the `-S /etc/varnish/secret \` line.
+##Raster import support
+Check raster2pgsql is in your path by doing:
+```bash
+which raster2pgsql
+```
+If it's not, you should link it:
+```bash
+sudo ln -s /usr/local/src/postgis-2.1.7/raster/loader/raster2pgsql /usr/bin/.
+```
+Access to temporary dir is also needed. Run
+```bash
+sudo chown 504:staff /usr/local/src/postgis-2.1.7/raster/loader/.libs 
+```maybe replacing 504:staff with your installation `/usr/local/src/postgis-2.1.7/raster/loader/` group and owner).
