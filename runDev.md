@@ -93,3 +93,7 @@ where `$PORT` is the port you want to attach the rails server to.
 
 ## check if things are running
 `http://localhost:8181/version` for Windsaft and `http://localhost:8080/api/v1/version` for SQL API
+#If imports fail, try reinstalling ogr
+```bash
+sudo apt-get install ogr2ogr2-static-bin
+```
