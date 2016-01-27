@@ -25,10 +25,21 @@ nano config/app_config.yml
 ```
 Maybe configure things like `session_domain`, `http_port`, etc.
 ```bash
-# Configure your postgres database connection details
+# Configure your postgres database connection details and user avatar images
 cp config/database.yml.sample config/database.yml
 nano config/database.yml
 
+...
+avatars:
+    base_url: 'localhost/app/assets/images/avatars'
+    kinds: ['ghost', 'heart', 'marker', 'mountain', 'pacman', 'planet', 'star']
+    colors: ['green', 'orange', 'red', 'yellow']
+
+# install plproxy for google geocoder api extension
+sudo apt-get install postgresql-9.3-plproxy
+#restart postgres twice
+sudo service postgresql restart
+sudo service postgresql restart
 # Add entries to /etc/hosts needed in development
 echo "127.0.0.1 ${SUBDOMAIN}.localhost.lan" | sudo tee -a /etc/hosts
 
@@ -41,6 +52,7 @@ echo "127.0.0.1 ${SUBDOMAIN}.localhost.lan" | sudo tee -a /etc/hosts
 #
 sh script/create_dev_user ${SUBDOMAIN}
 ```
+Sometimes when recreating the user you have to run `sh script/create_dev_user ${SUBDOMAIN}` again for it to be properly recreated...
 User password must be at least 6 characters
 ```bash
 # Run this to sync user config
@@ -82,6 +94,10 @@ bundle exec rails s -p 3000
 For a full list of CartoDB utility tasks:
 ```bash
 bundle exec rake -T
+```
+a description of rake tasks can be found inside cartoDb dir typing
+```bash
+bundel exec rake -D
 ```
 #Using foreman
 You can also use foreman to run the full stack (cartodb server, sql api, tiler, redis and resque), using a single command: IMPORTANT: You need to install foreman by yourself. It's not included in the Gemfile. Run this:
