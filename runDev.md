@@ -25,15 +25,9 @@ nano config/app_config.yml
 ```
 Maybe configure things like `session_domain`, `http_port`, etc.
 ```bash
-# Configure your postgres database connection details and user avatar images
+# Configure your postgres database connection details
 cp config/database.yml.sample config/database.yml
 nano config/database.yml
-
-...
-avatars:
-    base_url: 'localhost/app/assets/images/avatars'
-    kinds: ['ghost', 'heart', 'marker', 'mountain', 'pacman', 'planet', 'star']
-    colors: ['green', 'orange', 'red', 'yellow']
 
 # install plproxy for google geocoder api extension
 sudo apt-get install postgresql-9.3-plproxy
