@@ -16,7 +16,7 @@ bundle install
 redis-server &
 
 # If you are using rbenv simply run:
-rbenv local 1.9.3-p551
+rbenv local 2.2.3
 bundle install
 
 # Configure the application constants
